@@ -4,7 +4,7 @@ import "fmt"
 
 func sumf(c chan int) {
 	num1 := <-c
-	num2 := <-c
+	num2 := <-c 
 	c <- num1 + num2
 }
 func minusf(c chan int) {
