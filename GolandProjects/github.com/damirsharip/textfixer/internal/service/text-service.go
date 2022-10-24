@@ -15,12 +15,12 @@ import (
 //	n = strs
 //	newTexts[i] = n
 //}
-//
+
 //for i := range yr[0] {
 //	//yr[0][i].Word = yr[0][i].S[0]
 //	newTexts[i][yr[0][i].Pos-1] = yr[0][i].S[0]
 //}
-//
+
 //correctorTexts := make([]string, len(input.Texts))
 //for i, text := range input.Texts {
 //for _, misspell := range yr[i] {
@@ -40,9 +40,9 @@ func (s *Service) CheckSpell(ctx *gin.Context, req models.TextsInput) (models.Co
 
 	correctorTexts := make([]string, len(req.Texts))
 	for i, text := range req.Texts {
-		for _, misspell := range spellerResp {
-			if len(misspell.S) > 0 {
-				text = strings.Replace(text, misspell.Word, misspell.S[0], -1)
+		for _, misspell := range spellerResp[i] {
+			if len(misspell.Suggestions) > 0 {
+				text = strings.Replace(text, misspell.Word, misspell.Suggestions[0], -1)
 			}
 		}
 		correctorTexts[i] = text

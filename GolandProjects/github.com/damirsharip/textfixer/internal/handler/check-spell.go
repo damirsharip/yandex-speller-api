@@ -24,15 +24,15 @@ func (h *Handler) checkTextsSpelling(ctx *gin.Context) {
 		return
 	}
 
-	//res, err := h.services.CheckSpell(ctx, input)
-	//if err != nil {
-	//	//h.logger.Error(err)
-	//	ctx.JSON(http.StatusBadRequest, gin.H{
-	//		"status": 500,
-	//		"error":  "internal server error",
-	//	})
-	//	return
-	//}
+	res, err := h.services.CheckSpell(ctx, input)
+	if err != nil {
+		h.logger.Error(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"status": 500,
+			"error":  "internal server error",
+		})
+		return
+	}
 
-	ctx.JSON(http.StatusOK, gin.H{"ok": 1})
+	ctx.JSON(http.StatusOK, res)
 }

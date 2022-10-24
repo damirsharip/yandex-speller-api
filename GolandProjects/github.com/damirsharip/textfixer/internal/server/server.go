@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -29,31 +30,35 @@ func NewServer(logger *zap.SugaredLogger, h http.Handler) *Server {
 
 func (srv *Server) Run(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
+
 	defer cancel()
 
 	var listener net.Listener
+
 	var err error
+
+	isReady := &atomic.Value{}
+	isReady.Store(false)
 
 	listener, err = net.Listen("tcp", fmt.Sprintf("%s:%d", "localhost", 8000))
 
 	if err != nil {
-		srv.logger.Fatal(err)
+		//srv.logger.Fatal(err)
+		//srv.logger.FatalKV(ctx, err.Error())
 	}
 
-	defer func() {
-		err = listener.Close()
-	}()
+	defer listener.Close()
 
 	srv.httpServer = &http.Server{
-		Handler:        srv.handler,
-		MaxHeaderBytes: 1 << 20, // 1 MB
+		Handler: srv.handler,
+		//cors(srv.handler, cfg.Rest.AllowedCORSOrigins),
+		MaxHeaderBytes: 40 << 20, // 1 MB
 		WriteTimeout:   15 * time.Second,
 		ReadTimeout:    15 * time.Second,
 	}
 	srv.logger.Infof("starting listening on: %s:%d", "localhost", 8000)
 	go func() {
 		if err = srv.httpServer.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			srv.logger.Error(err)
 			cancel()
 		}
 	}()
@@ -71,9 +76,33 @@ func (srv *Server) Run(ctx context.Context) error {
 	defer finalCancel()
 
 	if err = srv.httpServer.Shutdown(ctx); err != nil {
-		srv.logger.Error(fmt.Errorf("Server.Shutdown(): %s", err.Error()))
+		//logger.ErrorKV(ctx, fmt.Sprintf("Server.Shutdown(): %s", err.Error()))
 		return err
 	}
 
 	return nil
 }
+
+//
+//func cors(h http.Handler, allowedOrigins []string) http.Handler {
+//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		providedOrigin := r.Header.Get("Origin")
+//		matches := false
+//		for _, allowedOrigin := range allowedOrigins {
+//			if providedOrigin == allowedOrigin {
+//				matches = true
+//				break
+//			}
+//		}
+//
+//		if matches {
+//			w.Header().Set("Access-Control-Allow-Origin", providedOrigin)
+//			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE")
+//			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, ResponseType, X-Request-ID, x-payload-digest, x-authorization-digest")
+//		}
+//		if r.Method == "OPTIONS" {
+//			return
+//		}
+//		h.ServeHTTP(w, r)
+//	})
+//}

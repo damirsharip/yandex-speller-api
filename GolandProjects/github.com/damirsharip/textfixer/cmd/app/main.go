@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	handler "textfixer/internal/handler"
 	"textfixer/internal/server"
+	"textfixer/internal/service"
 )
 
 func main() {
@@ -15,8 +16,8 @@ func main() {
 	defer logger.Sync() // flushes buffer, if any
 	sugar := logger.Sugar()
 
-	//srvc := service.NewService()
-	h := handler.NewHandler(sugar)
+	srvc := service.NewService()
+	h := handler.NewHandler(sugar, srvc)
 
 	// setting up routes
 	router := h.InitRoutes()

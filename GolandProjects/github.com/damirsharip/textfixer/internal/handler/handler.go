@@ -2,6 +2,7 @@ package handler
 
 import (
 	"go.uber.org/zap"
+	"textfixer/internal/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,16 +10,16 @@ import (
 type Handler struct {
 	logger *zap.SugaredLogger
 	//ctx      context.Context
-	//services service.Service
-	srv *gin.Engine
+	services service.Service
+	srv      *gin.Engine
 }
 
-//services *service.Service
-func NewHandler(logger *zap.SugaredLogger) *Handler {
+//
+func NewHandler(logger *zap.SugaredLogger, services *service.Service) *Handler {
 	return &Handler{
 		//ctx:      ctx,
-		//services: *services,
-		logger: logger,
+		services: *services,
+		logger:   logger,
 	}
 }
 
