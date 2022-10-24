@@ -1,1 +1,1 @@
-# homework-go-calc
+# https://github.com/damirsharip/yandex-speller-api
