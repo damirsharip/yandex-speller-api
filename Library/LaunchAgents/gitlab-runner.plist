@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Disabled</key>
+	<false/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>Label</key>
+	<string>gitlab-runner</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/local/bin/gitlab-runner</string>
+		<string>run</string>
+		<string>--working-directory</string>
+		<string>/Users/neangime</string>
+		<string>--config</string>
+		<string>/Users/neangime/.gitlab-runner/config.toml</string>
+		<string>--service</string>
+		<string>gitlab-runner</string>
+		<string>--syslog</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>SessionCreate</key>
+	<false/>
+	<key>StandardErrorPath</key>
+	<string>/Users/neangime/gitlab-runner.err.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/neangime/gitlab-runner.out.log</string>
+</dict>
+</plist>
